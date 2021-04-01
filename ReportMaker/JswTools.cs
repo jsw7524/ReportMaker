@@ -8,7 +8,6 @@ using System.Web;
 using OfficeOpenXml;
 using System.Data;
 
-
 namespace JswTools
 {
     public class ToolsJsw
@@ -20,17 +19,21 @@ namespace JswTools
     }
     public class ReportMaker
     {
-        Dictionary<string, ExcelRange> stylesDict = new Dictionary<string, ExcelRange>();
-        public MemoryStream FillReport(string filename, string templatefilename, Dictionary<string, List<TemplateRow>> data)
+        private string _deliminator1 = "%";
+        private string _deliminator2 = "#";
+        public ReportMaker(string deliminator1= "%", string deliminator2= "#")
         {
-            return FillReport(filename, templatefilename, data, new string[] { "%", "#" });
+            _deliminator1 = deliminator1;
+            _deliminator2 = deliminator2;
         }
-        public MemoryStream FillReport(string filename, string templatefilename, Dictionary<string, List<TemplateRow>> data, string[] deliminator)
+
+        public MemoryStream FillReport(string templatefilename, IDictionary<string, List<TemplateRow>> data)
         {
-            MemoryStream file = new MemoryStream();
-            using (FileStream temp = new FileStream(templatefilename, FileMode.Open))
+            Regex tagFinder = new Regex("^"+_deliminator1+"(?<tag>.*)"+_deliminator2+"$");
+            MemoryStream memoryStream = new MemoryStream();
+            using (FileStream templateFileStream = new FileStream(templatefilename, FileMode.Open))
             {
-                using (ExcelPackage xls = new ExcelPackage(file, temp))
+                using (ExcelPackage xls = new ExcelPackage(memoryStream, templateFileStream))
                 {
                     foreach (var ws in xls.Workbook.Worksheets)
                     {
@@ -38,30 +41,30 @@ namespace JswTools
                             continue;
                         foreach (var c in ws.Cells)
                         {
-                            string dataLabel = "" + c.Value;
-                            if (dataLabel.StartsWith(deliminator[0]) == false || dataLabel.EndsWith(deliminator[1]) == false)
+                            var match = tagFinder.Match(c.Value as string);
+                            if (!match.Success)
                             {
                                 continue;
                             }
-                            dataLabel = dataLabel.Replace(deliminator[0], "").Replace(deliminator[1], "");
+                            string tag = match.Groups["tag"].Value;
                             try
                             {
-                                for (int row = 0; row < data[dataLabel].Count; row++)
+                                for (int row = 0; row < data[tag].Count; row++)
                                 {
-                                    var rowData = data[dataLabel][row];
-                                    for (int col = 0; col < rowData.RowContent.Count ; col++)
+                                    var rowData = data[tag][row];
+                                    for (int col = 0; col < rowData.RowContent.Count; col++)
                                     {
-                                        if ("" == rowData.RowContent[col].info)
+                                        if ("" == rowData.RowContent[col].StyleInfo)
                                             continue;
-                                        xls.Workbook.Worksheets["StylesJSW"].Cells[rowData.RowContent[col].info].Copy(ws.Cells[row+c.Start.Row, col+c.Start.Column]);
+                                        xls.Workbook.Worksheets["StylesJSW"].Cells[rowData.RowContent[col].StyleInfo].Copy(ws.Cells[row + c.Start.Row, col + c.Start.Column]);
                                     }
                                 }
-                                var reportData = ((data[dataLabel]).Select(a => a.RowContent).Select(b => b.Select(z => z.content as object).ToArray()).ToArray());
+                                var reportData = ((data[tag]).Select(a => a.RowContent).Select(b => b.Select(z => z.content as object).ToArray()).ToArray());
                                 c.LoadFromArrays(reportData);
                             }
                             catch (Exception ex)
                             {
-                                c.Value = dataLabel + " not found";
+                                c.Value = tag + " not found";
                             }
                         }
                     }
@@ -72,7 +75,7 @@ namespace JswTools
                     xls.Save();
                 }
             }
-            return file;
+            return memoryStream;
         }
     }
     public class TemplateCell
@@ -92,10 +95,10 @@ namespace JswTools
         public TemplateCell(object c, string t)
         {
             content = c;
-            info = t;
+            StyleInfo = t;
         }
         public object content;
-        public string info;
+        public string StyleInfo;
     }
 
     public class TemplateRow : IEnumerable
