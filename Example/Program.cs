@@ -44,7 +44,7 @@ namespace Example
             dp.Process(Products.GroupBy(a => a.Color));
             ReportMaker reportMaker = new ReportMaker();
             Dictionary<string, List<TemplateRow>> dict = new Dictionary<string, List<TemplateRow>>() { { "Products", dp.Result } };
-            var image = reportMaker.FillReport("Template1.xlsx", dict);
+            var image = reportMaker.FillDataInTemplate("Template1.xlsx", dict);
             File.WriteAllBytes("Test1.xlsx", image.ToArray());
         }
 
@@ -67,7 +67,7 @@ namespace Example
             dp.Process(Products.GroupBy(a => a.Color));
             ReportMaker reportMaker = new ReportMaker();
             Dictionary<string, List<TemplateRow>> dict = new Dictionary<string, List<TemplateRow>>() { { "Products", dp.Result } };
-            var image = reportMaker.FillReport( "Template1.xlsx", dict);
+            var image = reportMaker.FillDataInTemplate( "Template1.xlsx", dict);
             File.WriteAllBytes("Test2.xlsx", image.ToArray());
         }
     }
