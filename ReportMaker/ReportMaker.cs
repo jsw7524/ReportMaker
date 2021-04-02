@@ -16,9 +16,9 @@ namespace JswTools
 
         private StylesManager _stylesManager;
 
-        public ReportMaker(StylesManager stylesManager=null, string deliminator1 = "%", string deliminator2 = "#")
+        public ReportMaker(StylesManager stylesManager = null, string deliminator1 = "%", string deliminator2 = "#")
         {
-            _stylesManager = stylesManager ??  new StylesManager();
+            _stylesManager = stylesManager;
             _deliminator1 = deliminator1;
             _deliminator2 = deliminator2;
         }
@@ -38,7 +38,11 @@ namespace JswTools
                         {
                             try
                             {
-                                var match = tagFinder.Match(c.Value as string);
+                                if (c.Value is null)
+                                {
+                                    continue;
+                                }
+                                Match match = tagFinder.Match(c.Value as string);
                                 if (false == match.Success)
                                 {
                                     continue;
@@ -46,12 +50,20 @@ namespace JswTools
                                 string tag = match.Groups["tag"].Value;
                                 for (int row = 0; row < data[tag].Count; row++)
                                 {
-                                    var rowData = data[tag][row];
+                                    TemplateRow rowData = data[tag][row];
+                                    if (false == string.IsNullOrEmpty(rowData.RowStyle))
+                                    {
+                                        _stylesManager?.ApplyStyle(rowData.RowStyle, ws.Cells[c.Start.Row + row, c.Start.Column, c.Start.Row + row, c.Start.Column + rowData.RowContent.Count]);
+                                    }
                                     for (int col = 0; col < rowData.RowContent.Count; col++)
                                     {
-                                        if (false==string.IsNullOrEmpty(rowData.RowContent[col].info))
+                                        if (null != rowData.RowContent[col].DoSomething)
                                         {
-                                            _stylesManager.ApplyStyle(rowData.RowContent[col].info, ws.Cells[row + c.Start.Row, col + c.Start.Column]);
+                                            rowData.RowContent[col].DoSomething(rowData.RowContent[col]);
+                                        }
+                                        if (false == string.IsNullOrEmpty(rowData.RowContent[col].cellStyle))
+                                        {
+                                            _stylesManager?.ApplyStyle(rowData.RowContent[col].cellStyle, ws.Cells[row + c.Start.Row, col + c.Start.Column]);
                                         }
                                         ws.Cells[row + c.Start.Row, col + c.Start.Column].Value = rowData.RowContent[col].content;
                                     }

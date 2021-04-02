@@ -3,19 +3,11 @@ using OfficeOpenXml;
 
 namespace JswTools
 {
-    public static class DefaultStyleNames
-    {
-        public readonly static string DefaultStyles_無 = "B2";
-        public readonly static string DefaultStyles_全框線 = "B4";
-        public readonly static string DefaultStyles_下框線 = "B6";
-    }
+
     public class StylesManager
     {
         private ExcelWorksheet _defaultStyleSheet;
-        public StylesManager()
-        {
-            _defaultStyleSheet = LoadDefaultStyles();
-        }
+
         public StylesManager(ExcelWorksheet sheet)
         {
             _defaultStyleSheet = sheet;

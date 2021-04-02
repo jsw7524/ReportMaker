@@ -24,9 +24,10 @@ namespace JswTools
         public TemplateCell(object c, string t)
         {
             content = c;
-            info = t;
+            cellStyle = t;
         }
         public object content;
-        public string info;
+        public string cellStyle;
+        public Action<object> DoSomething = null;
     }
 }
