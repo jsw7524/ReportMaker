@@ -1,5 +1,6 @@
 ﻿using System;
 
+
 namespace JswTools
 {
     public class TemplateCell
@@ -12,6 +13,10 @@ namespace JswTools
         {
             return new TemplateCell(str);
         }
+        public TemplateCell() : this("")
+        {
+            return;
+        }
         public TemplateCell(object c) : this(c, "")
         {
             return;
@@ -19,9 +24,9 @@ namespace JswTools
         public TemplateCell(object c, string t)
         {
             content = c;
-            StyleInfo = t;
+            info = t;
         }
         public object content;
-        public string StyleInfo;
+        public string info;
     }
 }

@@ -8,4 +8,13 @@
     <PackageReference Include="EPPlus" Version="4.5.3.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="DefaultStyles.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="StylesJSW.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

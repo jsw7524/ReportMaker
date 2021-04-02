@@ -13,8 +13,12 @@ namespace JswTools
     {
         private string _deliminator1;
         private string _deliminator2;
-        public ReportMaker(string deliminator1 = "%", string deliminator2 = "#")
+
+        private StylesManager _stylesManager;
+
+        public ReportMaker(StylesManager stylesManager=null, string deliminator1 = "%", string deliminator2 = "#")
         {
+            _stylesManager = stylesManager ??  new StylesManager();
             _deliminator1 = deliminator1;
             _deliminator2 = deliminator2;
         }
@@ -30,14 +34,12 @@ namespace JswTools
                     var sheets = xls.Workbook.Worksheets;
                     foreach (var ws in sheets)
                     {
-                        if ("StylesJSW" == ws.Name)
-                            continue;
                         foreach (var c in ws.Cells)
                         {
                             try
                             {
                                 var match = tagFinder.Match(c.Value as string);
-                                if (!match.Success)
+                                if (false == match.Success)
                                 {
                                     continue;
                                 }
@@ -47,21 +49,19 @@ namespace JswTools
                                     var rowData = data[tag][row];
                                     for (int col = 0; col < rowData.RowContent.Count; col++)
                                     {
+                                        if (false==string.IsNullOrEmpty(rowData.RowContent[col].info))
+                                        {
+                                            _stylesManager.ApplyStyle(rowData.RowContent[col].info, ws.Cells[row + c.Start.Row, col + c.Start.Column]);
+                                        }
                                         ws.Cells[row + c.Start.Row, col + c.Start.Column].Value = rowData.RowContent[col].content;
-                                        if ("" != rowData.RowContent[col].StyleInfo)
-                                            sheets["StylesJSW"].Cells[rowData.RowContent[col].StyleInfo].Copy(ws.Cells[row + c.Start.Row, col + c.Start.Column]);
                                     }
                                 }
                             }
                             catch (Exception ex)
                             {
-                                c.Value = c.Value + " not found";
+                                c.Value = c.Value + ":" + ex;
                             }
                         }
-                    }
-                    if (null != sheets["StylesJSW"])
-                    {
-                        sheets.Delete("StylesJSW");
                     }
                     xls.Save();
                 }

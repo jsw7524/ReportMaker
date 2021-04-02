@@ -19,3 +19,4 @@ C:\Users\netsp\source\repos\ReportMaker\Example\obj\Debug\Example.csproj.CoreCom
 C:\Users\netsp\source\repos\ReportMaker\Example\obj\Debug\Example.csproj.CopyComplete
 C:\Users\netsp\source\repos\ReportMaker\Example\obj\Debug\Example.exe
 C:\Users\netsp\source\repos\ReportMaker\Example\obj\Debug\Example.pdb
+C:\Users\netsp\source\repos\ReportMaker\Example\bin\Debug\DefaultStyles.xlsx

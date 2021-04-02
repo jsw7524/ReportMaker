@@ -59,7 +59,8 @@ namespace Example
                 {
                     var groupColor = x as IGrouping<string, Product>;
                     TemplateRow tmp = new TemplateRow();
-                    tmp.RowContent.AddRange(new List<TemplateCell>() { "Color:", groupColor.Key, groupColor.AsEnumerable().Count() });
+                    TemplateCell colorTemplateCell = new TemplateCell() { content = "Color:", info=DefaultStyleNames.DefaultStyles_全框線};
+                    tmp.RowContent.AddRange(new List<TemplateCell>() { colorTemplateCell, groupColor.Key, groupColor.AsEnumerable().Count() });
                     dp.Result.Add(tmp);
                 }
             };

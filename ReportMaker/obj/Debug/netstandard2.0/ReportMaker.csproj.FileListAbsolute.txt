@@ -7,3 +7,4 @@ C:\Users\netsp\source\repos\ReportMaker\ReportMaker\obj\Debug\netstandard2.0\Rep
 C:\Users\netsp\source\repos\ReportMaker\ReportMaker\obj\Debug\netstandard2.0\ReportMaker.dll
 C:\Users\netsp\source\repos\ReportMaker\ReportMaker\obj\Debug\netstandard2.0\ReportMaker.pdb
 C:\Users\netsp\source\repos\ReportMaker\ReportMaker\obj\Debug\netstandard2.0\ReportMaker.csprojAssemblyReference.cache
+C:\Users\netsp\source\repos\ReportMaker\ReportMaker\bin\Debug\netstandard2.0\DefaultStyles.xlsx
