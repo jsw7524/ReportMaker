@@ -15,17 +15,16 @@ namespace JswTools
         private string _deliminator2;
 
         private StylesManager _stylesManager;
+        private ReportMakerHelper _reportMakerHelper;
 
-        public ReportMaker(StylesManager stylesManager = null, string deliminator1 = "%", string deliminator2 = "#")
+        public ReportMaker(StylesManager stylesManager = null)
         {
             _stylesManager = stylesManager;
-            _deliminator1 = deliminator1;
-            _deliminator2 = deliminator2;
+            _reportMakerHelper = new ReportMakerHelper();
         }
 
         public MemoryStream FillDataInTemplate(string templatefilename, IDictionary<string, List<TemplateRow>> data)
         {
-            Regex tagFinder = new Regex("^" + _deliminator1 + "(?<tag>.+)" + _deliminator2 + "$");
             MemoryStream memoryStream = new MemoryStream();
             using (FileStream templateFileStream = new FileStream(templatefilename, FileMode.Open))
             {
@@ -38,16 +37,11 @@ namespace JswTools
                         {
                             try
                             {
-                                if (c.Value is null)
+                                string tag = _reportMakerHelper.FindCellTag(c);
+                                if (null == tag || false==data.ContainsKey(tag))
                                 {
                                     continue;
                                 }
-                                Match match = tagFinder.Match(c.Value as string);
-                                if (false == match.Success)
-                                {
-                                    continue;
-                                }
-                                string tag = match.Groups["tag"].Value;
                                 for (int row = 0; row < data[tag].Count; row++)
                                 {
                                     TemplateRow rowData = data[tag][row];
@@ -72,6 +66,7 @@ namespace JswTools
                             catch (Exception ex)
                             {
                                 c.Value = c.Value + ":" + ex;
+                                throw ex;
                             }
                         }
                     }

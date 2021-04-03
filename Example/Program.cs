@@ -93,7 +93,6 @@ namespace Example
             dp.Process(Products.GroupBy(a => a.Color));
 
             ReportMakerHelper reportMakerhelper = new ReportMakerHelper();
-
             MemoryStream msStyleSheet = new MemoryStream();
             var styleExcel=reportMakerhelper.GetExcelInMemory("Template2.xlsx", msStyleSheet);
             var styleSheet= styleExcel.Workbook.Worksheets["Styles"];
@@ -103,14 +102,8 @@ namespace Example
             var image = reportMaker.FillDataInTemplate("Template2.xlsx", dict);
             File.WriteAllBytes("Test3.xlsx", image.ToArray());
         }
-
     }
-
-
 }
-
-
-
 
 class Program
 {
@@ -118,7 +111,7 @@ class Program
     {
         AdventureWorksManager awm = new AdventureWorksManager();
         //awm.MakeReport1();
-        //awm.MakeReport2();
+        awm.MakeReport2();
         awm.MakeReport3();
     }
 }
