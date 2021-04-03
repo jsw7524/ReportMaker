@@ -24,6 +24,15 @@ namespace JswTools
             }
         }
 
+        public ExcelWorksheet GetSheet(string xlsxFile, string sheetName)
+        {
+            MemoryStream msStyleSheet = new MemoryStream();
+            var styleExcel = GetExcelInMemory(xlsxFile, msStyleSheet);
+            var styleSheet = styleExcel.Workbook.Worksheets[sheetName];
+            return styleSheet;
+        }
+
+
         public string FindCellTag(ExcelRangeBase c)
         {
             return FindCellInfo(c, "tag");
